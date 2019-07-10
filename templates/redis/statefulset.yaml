@@ -1,5 +1,6 @@
 {{- if eq .Values.redis.type "internal" -}}
 {{- $redis := .Values.persistence.persistentVolumeClaim.redis -}}
+{{- $nfs := .Values.persistence.nfsMount.redis -}}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -50,6 +51,12 @@ spec:
       volumes:
       - name: data
         emptyDir: {}
+      {{- else if $nfs.server }}
+      volumes:
+      - name: data
+        nfs:
+          server: {{ $nfs.server }}
+          path: {{ $nfs.path }}
       {{- else if $redis.existingClaim }}
       volumes:
       - name: data
@@ -68,7 +75,7 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-  {{- if and .Values.persistence.enabled (not $redis.existingClaim) }}
+  {{- if and .Values.persistence.enabled (not $redis.existingClaim) (not $nfs.server) }}
   volumeClaimTemplates:
   - metadata:
       name: data

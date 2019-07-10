@@ -2,7 +2,8 @@
 {{- $persistence := .Values.persistence -}}
 {{- if $persistence.enabled }}
 {{- $chartmuseum := $persistence.persistentVolumeClaim.chartmuseum -}}
-{{- if and (not $chartmuseum.existingClaim) (eq $persistence.imageChartStorage.type "filesystem") }}
+{{- $nfs := $persistence.nfsMount.chartmuseum -}}
+{{- if and (not $chartmuseum.existingClaim) (eq $persistence.imageChartStorage.type "filesystem") (not $nfs.server) }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:

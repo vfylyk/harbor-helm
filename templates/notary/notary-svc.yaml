@@ -9,6 +9,9 @@ spec:
 {{- if  (eq .Values.expose.ingress.controller "gce") }}
   type: NodePort
 {{- end }}
+{{- if .Values.expose.noneClusterIP }}
+  clusterIP: None
+{{- end }}
   ports:
   - port: 4443
   selector:
@@ -25,6 +28,9 @@ metadata:
 spec:
   ports:
   - port: 7899
+{{- if .Values.expose.noneClusterIP }}
+  clusterIP: None
+{{- end }}
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
     component: notary-signer

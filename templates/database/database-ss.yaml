@@ -1,5 +1,6 @@
 {{- if eq .Values.database.type "internal" -}}
 {{- $database := .Values.persistence.persistentVolumeClaim.database -}}
+{{- $nfs := .Values.persistence.nfsMount.database -}}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -69,6 +70,12 @@ spec:
       - name: "database-data"
         persistentVolumeClaim:
           claimName: {{ $database.existingClaim }}
+      {{- else if $nfs.server }}
+      volumes:
+      - name: "database-data"
+        nfs:
+          server: {{ $nfs.server }}
+          path: {{ $nfs.path }}
       {{- end -}}
     {{- with .Values.database.internal.nodeSelector }}
       nodeSelector:
@@ -82,7 +89,7 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-  {{- if and .Values.persistence.enabled (not $database.existingClaim) }}
+  {{- if and .Values.persistence.enabled (not $database.existingClaim) (not $nfs.server) }}
   volumeClaimTemplates:
   - metadata:
       name: "database-data"

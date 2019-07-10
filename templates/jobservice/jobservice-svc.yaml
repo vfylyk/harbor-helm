@@ -8,6 +8,9 @@ spec:
   ports:
     - port: 80
       targetPort: 8080
+{{- if .Values.expose.noneClusterIP }}
+  clusterIP: None
+{{- end }}
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
     component: jobservice

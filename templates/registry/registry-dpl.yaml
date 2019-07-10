@@ -125,7 +125,11 @@ spec:
         configMap:
           name: "{{ template "harbor.registry" . }}"
       - name: registry-data
-      {{- if and .Values.persistence.enabled (eq .Values.persistence.imageChartStorage.type "filesystem") }}
+      {{- if and .Values.persistence.enabled .Values.persistence.nfsMount.registry.server }}
+        nfs:
+          server: {{ .Values.persistence.nfsMount.registry.server }}
+          path: {{ .Values.persistence.nfsMount.registry.path }}
+      {{- else if and .Values.persistence.enabled (eq .Values.persistence.imageChartStorage.type "filesystem") }}
         persistentVolumeClaim:
           claimName: {{ .Values.persistence.persistentVolumeClaim.registry.existingClaim | default (include "harbor.registry" .) }}
       {{- else }}

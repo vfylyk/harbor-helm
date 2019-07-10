@@ -1,3 +1,4 @@
+{{- $nfs := .Values.persistence.nfsMount.jobservice -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -56,7 +57,7 @@ spec:
                 name: "{{ template "harbor.jobservice" . }}"
                 key: secret
           - name: CORE_URL
-            value: "http://{{ template "harbor.core" . }}"
+            value: "http://{{ template "harbor.core" . }}{{ if .Values.expose.noneClusterIP }}:8080{{ end }}"
           - name: REGISTRY_CONTROLLER_URL
             value: "http://{{ template "harbor.registry" . }}:8080"
           - name: LOG_LEVEL
@@ -75,7 +76,11 @@ spec:
         configMap:
           name: "{{ template "harbor.jobservice" . }}"
       - name: job-logs
-        {{- if and .Values.persistence.enabled (eq .Values.jobservice.jobLogger "file") }}
+        {{- if and .Values.persistence.enabled $nfs.server}}
+        nfs:
+          server: {{ $nfs.server }}
+          path: {{ $nfs.path }}
+        {{- else if and .Values.persistence.enabled (eq .Values.jobservice.jobLogger "file") }}
         persistentVolumeClaim:
           claimName: {{ .Values.persistence.persistentVolumeClaim.jobservice.existingClaim | default (include "harbor.jobservice" .) }}  
         {{- else }}

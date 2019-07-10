@@ -1,6 +1,7 @@
 {{- if .Values.persistence.enabled }}
 {{- $registry := .Values.persistence.persistentVolumeClaim.registry -}}
-{{- if and (not $registry.existingClaim) (eq .Values.persistence.imageChartStorage.type "filesystem") }}
+{{- $nfs := .Values.persistence.nfsMount.registry -}}
+{{- if and (not $registry.existingClaim) (eq .Values.persistence.imageChartStorage.type "filesystem") (not $nfs.server) }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:

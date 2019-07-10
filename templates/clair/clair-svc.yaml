@@ -11,6 +11,9 @@ spec:
       port: 6060
     - name: health
       port: 6061
+{{- if .Values.expose.noneClusterIP }}
+  clusterIP: None
+{{- end }}
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
     component: clair

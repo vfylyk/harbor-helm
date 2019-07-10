@@ -8,6 +8,9 @@ metadata:
 spec:
   ports:
     - port: 5432
+{{- if .Values.expose.noneClusterIP }}
+  clusterIP: None
+{{- end }}
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
     component: database

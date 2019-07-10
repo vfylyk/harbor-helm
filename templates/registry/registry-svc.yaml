@@ -10,6 +10,9 @@ spec:
       port: 5000
     - name: controller
       port: 8080
+{{- if .Values.expose.noneClusterIP }}
+  clusterIP: None
+{{- end }}
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
     component: registry

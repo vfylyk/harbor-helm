@@ -9,6 +9,9 @@ spec:
   ports:
     - port: 80
       targetPort: 9999
+{{- if .Values.expose.noneClusterIP }}
+  clusterIP: None
+{{- end }}
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
     component: chartmuseum
