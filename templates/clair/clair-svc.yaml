@@ -11,6 +11,8 @@ spec:
       port: 6060
     - name: health
       port: 6061
+    - name: adapter
+      port: {{ include "harbor.clairAdapter.servicePort" . }}
 {{- if .Values.expose.noneClusterIP }}
   clusterIP: None
 {{- end }}

@@ -12,8 +12,8 @@ spec:
   clusterIP: None
 {{- end }}
   ports:
-    - port: 80
-      targetPort: 8080
+    - port: {{ template "harbor.core.servicePort" . }}
+      targetPort: {{ template "harbor.core.containerPort" . }}
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
     component: core
