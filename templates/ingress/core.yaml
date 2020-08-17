@@ -85,7 +85,6 @@ spec:
     {{- if $ingress.hosts.core }}
     host: {{ $ingress.hosts.core }}
     {{- end }}
-{{- end }}
 
 {{- if .Values.notary.enabled  }}
 ---
