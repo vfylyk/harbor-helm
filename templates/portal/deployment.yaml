@@ -44,12 +44,8 @@ spec:
         livenessProbe:
           httpGet:
             path: /
-<<<<<<< HEAD
-            port: 8080
-=======
             scheme: {{ include "harbor.component.scheme" . | upper }}
             port: {{ template "harbor.portal.containerPort" . }}
->>>>>>> c8fa101fc2f03b723c015d389aff5c9dcf8d3913
           initialDelaySeconds: 300
           periodSeconds: 10
         readinessProbe:
