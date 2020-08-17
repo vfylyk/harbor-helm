@@ -498,12 +498,20 @@ host:port,pool_size,password
 {{/* CORE_URL */}}
 {{/* port is included in this url as a workaround for issue https://github.com/aquasecurity/harbor-scanner-trivy/issues/108 */}}
 {{- define "harbor.coreURL" -}}
-  {{- printf "%s://%s:%s" (include "harbor.component.scheme" .) (include "harbor.core" .) (include "harbor.core.servicePort" .) -}}
+  {{- if .Values.expose.noneClusterIP -}}
+    {{- printf "%s://%s:%s" (include "harbor.component.scheme" .) (include "harbor.core" .) (include "harbor.core.containerPort" .) -}}
+  {{- else -}}
+    {{- printf "%s://%s:%s" (include "harbor.component.scheme" .) (include "harbor.core" .) (include "harbor.core.servicePort" .) -}}
+  {{- end -}}
 {{- end -}}
 
 {{/* JOBSERVICE_URL */}}
 {{- define "harbor.jobserviceURL" -}}
-  {{- printf "%s://%s-jobservice:%s" (include "harbor.component.scheme" .)  (include "harbor.fullname" .) (include "harbor.jobservice.servicePort" .) -}}
+  {{- if .Values.expose.noneClusterIP -}}
+    {{- printf "%s://%s-jobservice:%s" (include "harbor.component.scheme" .)  (include "harbor.fullname" .) (include "harbor.jobservice.containerPort" .) -}}
+  {{- else -}}
+    {{- printf "%s://%s-jobservice:%s" (include "harbor.component.scheme" .)  (include "harbor.fullname" .) (include "harbor.jobservice.servicePort" .) -}}
+  {{- end -}}
 {{- end -}}
 
 {{/* PORTAL_URL */}}
